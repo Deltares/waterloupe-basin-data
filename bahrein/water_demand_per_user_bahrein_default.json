@@ -1,41 +1,32 @@
 {
 	"type": "bar",
 	"data": {
-		"labels": ["agri water use", "domestic water use", "industrial water use", "total"],
+		"labels": ["Agricultural Water Use", "Domestic Water Use", "Industrial Water Use", "Total Water Use"],
 		"datasets": [{
-			"backgroundColor": "#0033a0",
-			"borderColor": "#0033a0",
+			"label": "Groundwater",
+			"backgroundColor": "#0178BE",
+			"borderColor": "#0178BE",
 			"data": [75, 36, 51.8, 54.7],
 			"fill": false,
 			"hidden": false,
-			"label": "groundwater",
 			"lineTension": 0.1,
 			"pointRadius": 1
 		}, {
-			"backgroundColor": "#ffaa00",
-			"borderColor": "#ffaa00",
+			"label": "Desalinated Water",
+			"backgroundColor": "#F9A823",
+			"borderColor": "#F9A823",
 			"data": [0.6, 64, 48.2, 35.6],
 			"fill": false,
 			"hidden": false,
-			"label": "desalinated water",
 			"lineTension": 0.1,
 			"pointRadius": 1
 		}, {
-			"backgroundColor": "#654321",
-			"borderColor": "#654321",
+			"label": "Wastewater Reuse",
+			"backgroundColor": "#8D6E64",
+			"borderColor": "#8D6E64",
 			"data": [24.3, 0, 0, 9.7],
 			"fill": false,
 			"hidden": false,
-			"label": "treated wastewater",
-			"lineTension": 0.1,
-			"pointRadius": 1
-		}, {
-			"backgroundColor": "#228c22",
-			"borderColor": "#228c22",
-			"data": [0.1, 0, 0, 0.1],
-			"fill": false,
-			"hidden": false,
-			"label": "drainage water",
 			"lineTension": 0.1,
 			"pointRadius": 1
 		}]
