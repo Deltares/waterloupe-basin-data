@@ -1,0 +1,93 @@
+{
+	"type": "bar",
+	"data": {
+		"labels": ["2015", "2025", "2025", "2045"],
+		"datasets": [{
+			"label": "Availability: Natural Resources",
+			"stack": "availability",
+			"backgroundColor": "#0178BE",
+			"borderColor": "#0178BE",
+			"data": [205, 134, 209, 179],
+			"fill": false,
+			"hidden": false,
+			"lineTension": 0.1,
+			"pointRadius": 1
+		}, {
+			"label": "Availability: Desalinated Water",
+			"stack": "availability",
+			"backgroundColor": "#F9A823",
+			"borderColor": "#F9A823",
+			"data": [45, 69, 87, 115],
+			"fill": false,
+			"hidden": false,
+			"lineTension": 0.1,
+			"pointRadius": 1
+		}, {
+			"label": "Availability: Wastewater Reuse",
+			"stack": "availability",
+			"backgroundColor": "#8D6E64",
+			"borderColor": "#8D6E64",
+			"data": [36, 41, 49, 57],
+			"fill": false,
+			"hidden": false,
+			"lineTension": 0.1,
+			"pointRadius": 1
+		}, {
+			"label": "Demand: Agricultur",
+			"stack": "demand",
+			"backgroundColor": "#346A33",
+			"borderColor": "#346A33",
+			"data": [105, 113, 117, 119],
+			"fill": false,
+			"hidden": false,
+			"lineTension": 0.1,
+			"pointRadius": 1
+		}, {
+			"label": "Demand: Industry",
+			"stack": "demand",
+			"backgroundColor": "#788F9D",
+			"borderColor": "#788F9D",
+			"data": [10, 12, 12, 13],
+			"fill": false,
+			"hidden": false,
+			"lineTension": 0.1,
+			"pointRadius": 1
+		}, {
+			"label": "Demand: Domestic",
+			"stack": "demand",
+			"backgroundColor": "#D74626",
+			"borderColor": "#D74626",
+			"data": [65, 79, 92, 97],
+			"fill": false,
+			"hidden": false,
+			"lineTension": 0.1,
+			"pointRadius": 1
+		}]
+	},
+	"options": {
+		"responsive": true,
+		"maintainAspectRatio": false,
+		"legend": {
+			"display": true,
+			"position": "bottom"
+		},
+		"tooltips": {
+			"mode": "index",
+			"intersect": false
+		},
+		"scales": {
+			"xAxes": [{
+				"stacked": true,
+				"display": true
+			}],
+			"yAxes": [{
+				"display": true,
+				"stacked": true,
+				"scaleLabel": {
+					"labelString": "MCM/month",
+					"display": true
+				}
+			}]
+		}
+	}
+}

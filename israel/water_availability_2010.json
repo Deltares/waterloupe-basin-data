@@ -1,0 +1,24 @@
+{
+	"type": "doughnut",
+	"data": {
+		"datasets": [{
+			"data": [658, 329, 404],
+			"backgroundColor": [
+				"#0178BE",
+				"#F9A823",
+				"#8D6E64"
+			]
+		}],
+		"labels": [
+			"Natural Sources",
+			"Desalination",
+			"Reuse of TSE"
+		]
+	},
+	"options": {
+		"tooltips": {
+			"enabled": true,
+			"mode": "single"
+		}
+	}
+}

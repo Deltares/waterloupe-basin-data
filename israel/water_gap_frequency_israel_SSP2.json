@@ -1,0 +1,62 @@
+{
+   "type":"bar",
+   "data":{
+      "labels":[
+         "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ],
+      "datasets":[
+         {
+            "label":"2010-2020",
+            "backgroundColor":"#4dd0e1",
+            "data":[1, 0, 0, 3, 10, 10, 10, 10, 10, 10, 7, 1]
+         },
+         {
+            "label":"2020-2030",
+            "backgroundColor":"#00bcd4",
+            "data":[1, 0, 0, 3, 10, 10, 10, 10, 10, 10, 10, 2]
+         },
+         {
+            "label":"2030-2040",
+            "backgroundColor":"#0097a7",
+            "data":[1, 0, 0, 7, 10, 10, 10, 10, 10, 10, 9, 3]
+         },
+         {
+            "label":"2040-2050",
+            "backgroundColor":"#006064",
+            "data":[ 1, 0, 0, 3, 10, 10, 10, 10, 10, 7, 10, 1 ]
+         }
+      ]
+   },
+   "options":{
+      "title":{
+         "display":false,
+         "text":"hallo"
+      },
+      "tooltips":{
+         "mode":"index",
+         "intersect":false
+      },
+      "responsive":true,
+      "scales":{
+         "xAxes":[
+            {
+               "stacked":false
+            }
+         ],
+         "yAxes":[
+            {
+               "stacked":false,
+               "scaleLabel": {
+                   "display":true,
+                   "labelString": "Water gap occurance"
+              },
+               "ticks":{
+                  "max":10,
+                  "min":0,
+                  "stepSize":1
+               }
+            }
+         ]
+      }
+   }
+}
