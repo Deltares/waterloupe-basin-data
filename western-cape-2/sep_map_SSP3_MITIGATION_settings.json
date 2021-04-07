@@ -1,0 +1,30 @@
+[
+   {
+      "order": 0,
+      "label": "Periods",
+      "type": "dropdown",
+      "options": {
+         "2015": "0",
+         "2025": "1",
+         "2035": "2",
+         "2045": "3"
+      }
+   },
+   {
+      "order": 1,
+      "label": "Parameters",
+      "type": "dropdown",
+      "options": {
+         "Agricultural land use": "0",
+         "Nature land use": "1",
+         "Urban land use": "2",
+         "Population density (per km2)": "3",
+         "GDP (USD per km2)": "4",
+         "GDP (USD per capita)": "5",
+         "Rural Population": "6",
+         "Poverty": "7",
+         "Extreme Poverty": "8",
+         "Population Below 15": "9"
+      }
+   }
+]

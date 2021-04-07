@@ -1,0 +1,26 @@
+[
+   {
+      "order": 0,
+      "label": "Periods",
+      "type": "dropdown",
+      "options": {
+         "2015": "0",
+         "2025": "1",
+         "2035": "2",
+         "2045": "3"
+      }
+   },
+   {
+      "order": 1,
+      "label": "Users",
+      "type": "dropdown",
+      "options": {
+         "Industries and business": "0",
+         "Large Farms": "1",
+         "Nature & Biodiversity": "2",
+         "Non-poor Households": "3",
+         "Poor Households": "4",
+         "Self-Subsistence Farmers": "5"
+      }
+   }
+]
