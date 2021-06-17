@@ -18,12 +18,12 @@
          "Agricultural land use [%]": "0",
          "Nature land use [%]": "1",
          "Urban land use [%]": "2",
-         "Population density [per km\u00b2]": "3",
-         "GDP [x1000 USD per km\u00b2]": "4",
+         "Population density [per km&#178]": "3",
+         "GDP [x1000 USD per km&#178]": "4",
          "GDP [x1000 USD per capita]": "5",
          "Rural Population [%]": "6",
          "Poverty [%]": "7",
-         "Extreme Poverty": "8",
+         "Extreme Poverty [%]": "8",
          "Population Below 15 [%]": "9"
       }
    }
