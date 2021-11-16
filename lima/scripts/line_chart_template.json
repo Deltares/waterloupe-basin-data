@@ -1,0 +1,42 @@
+{
+	"type": "line",
+	"data": {
+		"labels": [],
+        "datasets": [{
+			"label": "Total Availability",
+			"backgroundColor": "#0178BE",
+			"borderColor": "#0178BE",
+			"data": [],
+      "fill": false,
+			"hidden": false,
+			"lineTension": 0.1,
+			"pointRadius": 0,
+			"borderWidth": 1
+		}]
+	},
+	"options": {
+		"responsive": true,
+		"maintainAspectRatio": false,
+		"legend": {
+			"display": true,
+      "position": "top"
+		},
+		"scales": {
+			"xAxes": [{
+				"display": true,
+				"type": "time",
+				"time": {
+					"unit": "year",
+					"stepSize": 5
+				}
+			}],
+			"yAxes": [{
+				"display": true,
+				"scaleLabel": {
+					"labelString": "L/month",
+					"display": true
+				}
+			}]
+		}
+	}
+}
