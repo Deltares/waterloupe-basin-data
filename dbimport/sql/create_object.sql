@@ -62,12 +62,18 @@ select sub_parameter, parameter, scenario, solution, area, array_agg(sum_value o
 from wl.scenariodata_agg
 group by sub_parameter, parameter, scenario, solution, area;
 
+drop view if exists wl.scenariodata_series_data_total cascade;
+create or replace view wl.scenariodata_series_data_total as 
+select * from wl.scenariodata_series_date where parameter in ('waterAvailability', 'waterDemand', 'waterGap');
+
 drop function if exists wl.scenariodata_agg_json(selected_area varchar, selected_scenario varchar, selected_solution varchar);
 create or replace function wl.scenariodata_agg_json(selected_area varchar, selected_scenario varchar, selected_solution varchar) returns setof json as
 $$
     select
    json_build_object(
-            'labels',to_json(pe.period_name_agg)
+     		'xAxis', json_build_object(
+     			'type', 'category'
+     			,'data',to_json(pe.period_name_agg) )      
             ,'series',j.jdata
     )
     from (
@@ -75,8 +81,9 @@ $$
         json_agg(
                 json_build_object(
                 'name', sda.parameter
-                ,'sub_parameter', sda.sub_parameter
+                ,'stack', sda.sub_parameter
                 ,'data', to_json(sda.data)
+                ,'type', 'bar'
                 )
         ) jdata
         from wl.scenariodata_series_agg sda
@@ -99,14 +106,50 @@ with x as (
 )
     select
    json_build_object(
-            'labels',to_json(da.date_agg)
+   			'xAxis', json_build_object(
+   					'type', 'category'
+   				   ,'data', to_json(da.date_agg)
+   				) 
             ,'series',j.jdata
     )
     from (
         select
         json_agg(
                 json_build_object(
-                'name', x.parameter
+                 'type', 'line'
+                ,'name', x.parameter
+                ,'sub_parameter', x.sub_parameter
+                ,'data', to_json(x.data)
+                )
+        ) jdata
+        from x
+    ) j
+    , (select date_agg from x limit 1) da
+$$ language sql
+;
+
+drop function if exists wl.scenariodata_per_date_total_json(selected_area varchar, selected_scenario varchar, selected_solution varchar);
+create or replace function wl.scenariodata_per_date_total_json(selected_area varchar, selected_scenario varchar, selected_solution varchar) returns setof json as
+$$
+with x as (
+        select *
+        from wl.scenariodata_series_data_total sda
+        where sda.area=selected_area and sda.scenario=selected_scenario and sda.solution=selected_solution
+)
+    select
+   json_build_object(
+   			'xAxis', json_build_object(
+   					'type', 'category'
+   				   ,'data', to_json(da.date_agg)
+   				) 
+            ,'series',j.jdata
+    )
+    from (
+        select
+        json_agg(
+                json_build_object(
+                 'type', 'line'
+                ,'name', x.parameter
                 ,'sub_parameter', x.sub_parameter
                 ,'data', to_json(x.data)
                 )
