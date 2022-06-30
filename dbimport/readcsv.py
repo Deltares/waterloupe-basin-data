@@ -51,7 +51,10 @@ def processWL(basePathSource, connString):
         else:
             print(filename)
             # split components (=filename, parameter, scenario, solution)
-            file_components  = filename.split('_')
+            file_components  = filename.split('_')      
+            # cut off parameter after 4th character
+            file_components[1] = file_components[1][:4]
+
             file_components.insert(0,filename)
 
             # read file properties
