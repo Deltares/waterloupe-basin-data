@@ -35,6 +35,7 @@ from wl.scenariodata sd
 join (
     select case when parameter ilike '%%availability%%' then 'availability'
             when parameter ilike '%%demand%%' then 'demand'
+            when parameter ilike '%%gap%%' then 'gap'
         end sub_parameter
     , *
     from wl.file
@@ -88,6 +89,7 @@ $$
         ) jdata
         from wl.scenariodata_series_agg sda
         where sda.area=selected_area and sda.scenario=selected_scenario and sda.solution=selected_solution
+        and sda.sub_parameter <> 'gap'
     ) j
     , (select array_agg(period_name order by period_id) period_name_agg from wl.period) pe
 $$ language sql
