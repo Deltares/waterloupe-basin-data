@@ -25,18 +25,27 @@ def processWL(basePathSource, connString):
     conn = engine.connect()
 
     # create db structure
-    sqlfile = open(r'X:/waterloupe/import/sql/create_object.sql', 'r')
+    sqlfile = open(r'sql/create_object.sql', 'r')
     sql_create_object = sqlfile.read()
     sqlfile.close()
     conn.execute(sql_create_object)
     db_schema = 'wl'
+    # db_import_schema = 'import'
     df_file_columns = ['filename','parameter','scenario','solution']
     # df_file = pd.DataFrame(columns=df_file_columns)
 
     # read shp file 
-    df_shp = gpd.read_file(r'D:\waterloupe\Peru\shp\areas.shp')
+    shp_file = str(basePathSource) + r'/shp/areas.shp'
+    print(shp_file)
+    df_shp = gpd.read_file(shp_file)
     df_shp = df_shp.set_geometry('geometry')
-    df_shp.to_postgis('area', engine, schema=db_schema, index=True, index_label='Index')
+    df_shp.rename(columns={'Nom_Senamh':'name', 'ID':'area_id'}, inplace=True)
+    df_shp = df_shp[['area_id','name','km2','geometry']]
+    # write shp to db
+    df_shp.to_postgis('area', engine, schema=db_schema, if_exists='append', index=False)
+    # define df_area for look up from scenario data
+    df_area = df_shp[['area_id', 'name']]
+    df_area = df_area.set_index('name')
 
     # read csv files
     for csv_fil in csv_files:
@@ -78,8 +87,12 @@ def processWL(basePathSource, connString):
             dfm = pd.DataFrame(data=df)
             dfm = dfm.melt(id_vars=['area'],var_name='date',value_name='value')
             dfm.insert(0, 'file_id',value=fileid)
+            # look up area_id
+            dfm = df_area.join(dfm.set_index('area'),on=['name'])
+            dfm = dfm[['file_id','area_id','date','value']]
+            dfm.set_index('file_id', 'area_id')
+            # write scenariodata to db
             dfm.to_sql('scenariodata', engine, schema=db_schema, if_exists='append', index=False)
 
 # TO DO:
-# area->id?
 # case_id toevoegen obv folder? (Lima... etc.)
