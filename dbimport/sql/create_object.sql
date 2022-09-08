@@ -40,10 +40,16 @@ create table wl.scenariodata
 );
 
 
+drop view if exists wl.area_json cascade;
+create or replace view wl.area_json as
+select a.area_id, name, km2, st_asgeojson(geometry) geometry
+from wl.area a
+;
+
 drop view if exists wl.area_geojson cascade;
 create or replace view wl.area_geojson as
 select *
-from wl.area
+from wl.area a
 ;
 
 drop view if exists wl.scenariodata_per_date cascade;
