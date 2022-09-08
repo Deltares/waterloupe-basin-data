@@ -90,7 +90,7 @@ def processWL(basePathSource, connString):
             # look up area_id
             dfm = df_area.join(dfm.set_index('area'),on=['name'])
             dfm = dfm[['file_id','area_id','date','value']]
-            dfm.set_index('file_id', 'area_id')
+            dfm.set_index(keys=['file_id', 'area_id'])
             # write scenariodata to db
             dfm.to_sql('scenariodata', engine, schema=db_schema, if_exists='append', index=False)
 
