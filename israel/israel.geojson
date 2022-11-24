@@ -32,7 +32,8 @@
         "weight": 2,
         "opacity": 1,
         "fill": "#000",
-        "fillOpacity": 0
+        "fillOpacity": 0,
+        "popupHTML":"Area"
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -61,30 +62,6 @@
            ]
         ]
        }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [33.0410228,35.1049259]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [32.6301798,35.3154746]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [32.4530132,34.9094338]
-      }
     }
   ]
 }
