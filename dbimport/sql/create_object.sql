@@ -1,13 +1,9 @@
 drop schema if exists {db_schema} cascade;
 create schema {db_schema} /*authorization rw*/;
 
--- drop schema if exists import cascade;
--- create schema import /*authorization rw*/;
-
 create table {db_schema}.area
 (
     area_id int,
---     casename text,
     name varchar,
     km2 decimal(9,2),
     geometry geometry (Polygon, 4326),
@@ -17,19 +13,16 @@ create table {db_schema}.area
 create table {db_schema}.file
 (
     file_id serial primary key,
---     casename text unique,
     filename  text,
+    users text,
     parameter text,
     scenario  text,
     solution  text
 );
 
--- insert into {db_schema}.file(filename) values ('test');
-
 create table {db_schema}.period
 (
     period_id smallint primary key,
---     casename text,
     period_name  text,
     start_date date,
     end_date date
@@ -43,13 +36,6 @@ create table {db_schema}.scenariodata
     date    date,
     value   double precision
 );
-
-
--- drop view if exists {db_schema}.area_geojson cascade;
--- create or replace view {db_schema}.area_geojson as
--- select a.area_id, name, km2, st_asgeojson(geometry) geometry
--- from {db_schema}.area a
--- ;
 
 drop view if exists {db_schema}.scenariodata_per_date cascade;
 create or replace view {db_schema}.scenariodata_per_date as
@@ -65,8 +51,7 @@ join (
     from {db_schema}.file f
 ) fi on fi.file_id=sd.file_id
 join {db_schema}.period pe on sd.date between pe.start_date and pe.end_date
-group by fi.sub_parameter, fi.parameter, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name
-;
+group by fi.sub_parameter, fi.parameter, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name;
 
 drop view if exists {db_schema}.scenariodata_series_date cascade;
 create or replace view {db_schema}.scenariodata_series_date as
@@ -78,8 +63,7 @@ drop view if exists {db_schema}.scenariodata_agg cascade;
 create or replace view {db_schema}.scenariodata_agg as
 select sub_parameter, parameter, scenario, solution, period_id, period_name, area_id, area, count(*) count_value, sum(sum_value) sum_value
 from {db_schema}.scenariodata_per_date
-group by sub_parameter, parameter, scenario, solution, period_id, period_name, area_id, area
-;
+group by sub_parameter, parameter, scenario, solution, period_id, period_name, area_id, area;
 
 drop view if exists {db_schema}.scenariodata_series_agg cascade;
 create or replace view {db_schema}.scenariodata_series_agg as
@@ -122,7 +106,6 @@ $$ language sql
 -- select * from {db_schema}.scenariodata_agg_json('altoChillon', 'SSP2','none');
 -- select * from {db_schema}.scenariodata_agg_json(1, 'SSP2','none');
 
-
 drop function if exists {db_schema}.scenariodata_per_date_json(selected_area_id int, selected_scenario varchar, selected_solution varchar);
 create or replace function {db_schema}.scenariodata_per_date_json(selected_area_id int, selected_scenario varchar, selected_solution varchar) returns setof json as
 $$
@@ -152,8 +135,7 @@ with x as (
         from x
     ) j
     , (select date_agg from x limit 1) da
-$$ language sql
-;
+$$ language sql;
 
 drop function if exists {db_schema}.scenariodata_per_date_total_json(selected_area_id int, selected_scenario varchar, selected_solution varchar);
 create or replace function {db_schema}.scenariodata_per_date_total_json(selected_area_id int, selected_scenario varchar, selected_solution varchar) returns setof json as
@@ -184,8 +166,7 @@ with x as (
         from x
     ) j
     , (select date_agg from x limit 1) da
-$$ language sql
-;
+$$ language sql;
 -- example:
 -- select * from {db_schema}.scenariodata_per_date_json('altoChillon', 'SSP3','none');
 -- select * from {db_schema}.scenariodata_per_date_json(1, 'SSP3','none');

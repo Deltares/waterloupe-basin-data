@@ -36,7 +36,7 @@ def processWL(basePathSource, connString):
         sql_create_object = sql_create_object.replace(r"{db_schema}", db_schema)
         print(sql_create_object)
         conn.execute(sql_create_object)
-        df_file_columns = ['filename','parameter','scenario','solution']
+        df_file_columns = ['filename','parameter','users','scenario','solution']
 
         # read shp file 
         shp_file = str(casePathSource) + r'/shp/areas.shp'
@@ -71,10 +71,12 @@ def processWL(basePathSource, connString):
 
             else:
                 print(filename)
-                # split components (=filename, parameter, scenario, solution)
+                # split components (=filename, parameter, users, scenario, solution)
                 file_components  = filename.split('_')      
+
                 # cut off parameter after 4th character
-                file_components[1] = file_components[1][:4]
+                # file_components[2] = file_components[2][:4]
+                # print(file_components)
 
                 file_components.insert(0,filename)
 
