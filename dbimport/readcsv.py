@@ -22,7 +22,6 @@ def processWL(basePathSource, connString):
     # read main folders (each folder is one case)
     cases = [f.name for f in os.scandir(basePathSource) if f.is_dir()]
     print(cases)
-    cases.remove('lima')
 
     for case in cases:
         print(case)
@@ -64,20 +63,11 @@ def processWL(basePathSource, connString):
             if(filename=='periods'):
                 df_period = pd.read_csv(csv_fil, delimiter=",", engine='python',header=0)
                 df_period.rename(columns={'id': 'period_id','name': 'period_name','start': 'start_date', 'end': 'end_date'}, inplace=True)
-                print(df_period)
-                # df_period.insert(1,'casename',case)
-                print(df_period)
                 df_period.to_sql('period', engine, schema=db_schema, if_exists='append', index=False)
 
             else:
-                print(filename)
                 # split components (=filename, parameter, users, scenario, solution)
                 file_components  = filename.split('_')      
-
-                # cut off parameter after 4th character
-                # file_components[2] = file_components[2][:4]
-                # print(file_components)
-
                 file_components.insert(0,filename)
 
                 # read file properties

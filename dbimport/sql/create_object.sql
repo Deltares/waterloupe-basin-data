@@ -77,7 +77,8 @@ select * from {db_schema}.scenariodata_series_date where parameter in ('waterAva
 
 drop view if exists {db_schema}.scenariodata_risk_per_period cascade;
 create or replace view {db_schema}.scenariodata_risk_per_period as
-select fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, ar.area_id, ar.name as area, ar.geometry
+select fi.filename, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, ar.area_id, ar.name as area, ar.km2 as area_km2, sc.value as risk_value, ar.geometry
+, 'The risk for {name} is {value}.' as "popupHTML"
 from {db_schema}.scenariodata sc
 join {db_schema}.file fi on fi.file_id=sc.file_id
 join {db_schema}.period pe on pe.period_id=sc.period_id
@@ -179,3 +180,28 @@ $$ language sql;
 -- example:
 -- select * from {db_schema}.scenariodata_per_date_json('altoChillon', 'SSP3','none');
 -- select * from {db_schema}.scenariodata_per_date_json(1, 'SSP3','none');
+
+drop function if exists {db_schema}.risk_data_geojson(period_id int, scenario varchar, solution varchar, users varchar);
+create or replace function {db_schema}.risk_data_geojson(period_id int, scenario varchar, solution varchar='none', users varchar='none') returns setof jsonb as
+$$
+    with x as (
+        select *
+        from (
+            select area_id, area, area_km2, risk_value, "popupHTML", geometry
+            ,sc.period_id sc_period_id, sc.scenario sc_scenario, sc.solution sc_solution, sc.users sc_users
+            from {db_schema}.scenariodata_risk_per_period sc
+        ) sub
+        where sc_period_id=1
+        and sc_scenario=scenario
+        and sc_solution=coalesce(solution, 'none')
+        and sc_users=users
+    )
+    select jsonb_build_object(
+        'type','FeatureCollection'
+        ,'features', json_agg(st_asgeojson(x.*)::json)
+        )
+    from x;
+$$ language sql
+;
+-- example:
+-- select * from {db_schema}.risk_data_geojson(1,'SSP2', 'none', 'Agriculture');
