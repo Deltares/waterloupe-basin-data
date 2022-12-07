@@ -75,6 +75,15 @@ drop view if exists {db_schema}.scenariodata_series_data_total cascade;
 create or replace view {db_schema}.scenariodata_series_data_total as
 select * from {db_schema}.scenariodata_series_date where parameter in ('waterAvailability', 'waterDemand', 'waterGap');
 
+drop view if exists {db_schema}.scenariodata_risk_per_period cascade;
+create or replace view {db_schema}.scenariodata_risk_per_period as
+select fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, ar.area_id, ar.name as area, ar.geometry
+from {db_schema}.scenariodata sc
+join {db_schema}.file fi on fi.file_id=sc.file_id
+join {db_schema}.period pe on pe.period_id=sc.period_id
+join {db_schema}.area ar on ar.area_id=sc.area_id
+where fi.parameter in ('risk', 'waterScarcityIndex');
+
 drop function if exists {db_schema}.scenariodata_agg_json(selected_area_id int, selected_scenario varchar, selected_solution varchar);
 create or replace function {db_schema}.scenariodata_agg_json(selected_area_id int, selected_scenario varchar, selected_solution varchar) returns setof json as
 $$
