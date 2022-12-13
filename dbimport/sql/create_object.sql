@@ -37,6 +37,18 @@ create table {db_schema}.scenariodata
     value   double precision
 );
 
+drop view if exists {db_schema}.list_parameter cascade;
+create or replace view {db_schema}.list_parameter as select distinct parameter from lima.file;
+
+drop view if exists {db_schema}.list_users cascade;
+create or replace view {db_schema}.list_users as select distinct users from lima.file;
+
+drop view if exists {db_schema}.list_scenario cascade;
+create or replace view {db_schema}.list_scenario as select distinct scenario from lima.file;
+
+drop view if exists {db_schema}.list_solution cascade;
+create or replace view {db_schema}.list_solution as select distinct solution from lima.file;
+
 drop view if exists {db_schema}.scenariodata_per_date cascade;
 create or replace view {db_schema}.scenariodata_per_date as
 select fi.sub_parameter, fi.parameter, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name as area, count(*) count_value, sum(value) value
