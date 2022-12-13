@@ -51,7 +51,7 @@ create or replace view {db_schema}.list_solution as select distinct solution fro
 
 drop view if exists {db_schema}.scenariodata_per_date cascade;
 create or replace view {db_schema}.scenariodata_per_date as
-select fi.sub_parameter, fi.parameter, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name as area, count(*) count_value, sum(value) value
+select fi.sub_parameter, fi.parameter, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name as area, count(*) count_value, sum(sd.value) as value
 from {db_schema}.scenariodata sd
 join {db_schema}.area a on a.area_id=sd.area_id
 join (
@@ -73,7 +73,7 @@ group by sub_parameter, parameter, scenario, solution, area_id, area;
 
 drop view if exists {db_schema}.scenariodata_agg cascade;
 create or replace view {db_schema}.scenariodata_agg as
-select sub_parameter, parameter, users, scenario, solution, period_id, period_name, area_id, area, count(*) count_value, sum(value) value
+select sub_parameter, parameter, users, scenario, solution, period_id, period_name, area_id, area, count(*) count_value, sum(value) as value
 from {db_schema}.scenariodata_per_date
 group by sub_parameter, parameter, users, scenario, solution, period_id, period_name, area_id, area;
 
@@ -89,7 +89,7 @@ select * from {db_schema}.scenariodata_series_date where parameter in ('waterAva
 
 drop view if exists {db_schema}.scenariodata_per_period cascade;
 create or replace view {db_schema}.scenariodata_per_period as
-select fi.parameter, fi.filename, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, ar.area_id, ar.name as area, ar.km2 as area_km2, sc.value as risk_value, ar.geometry
+select fi.parameter, fi.filename, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, ar.area_id, ar.name as area, ar.km2 as area_km2, sc.value as value, ar.geometry
 , 'The risk for {name} is {value}.' as "popupHTML"
 from {db_schema}.scenariodata sc
 join {db_schema}.file fi on fi.file_id=sc.file_id
@@ -236,7 +236,7 @@ $$
         select *
         from (
             select area_id, area, area_km2, value, "popupHTML", geometry
-            ,sc.period_id sc_period_id, sc.scenario sc_scenario, sc.solution sc_solution, sc.users sc_users
+            ,sc.period_id sc_period_id, sc.scenario sc_scenario, sc.solution sc_solution, sc.users sc_users, sc.parameter sc_parameter
             from {db_schema}.scenariodata_per_period sc
         ) sub
         where sc_period_id=1
@@ -253,4 +253,5 @@ $$
 $$ language sql
 ;
 -- example:
--- select * from {db_schema}.risk_data_geojson(1,'SSP2', 'none', 'Agriculture');
+-- select * from {db_schema}.all_data_geojson('waterDemand', 1,'SSP2', 'none', 'none');
+-- select * from {db_schema}.all_data_geojson('waterGapScore', 1,'SSP2', 'none', 'Agriculture');
