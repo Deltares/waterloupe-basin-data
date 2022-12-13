@@ -39,7 +39,7 @@ create table {db_schema}.scenariodata
 
 drop view if exists {db_schema}.scenariodata_per_date cascade;
 create or replace view {db_schema}.scenariodata_per_date as
-select fi.sub_parameter, fi.parameter, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name as area, count(*) count_value, sum(value) sum_value
+select fi.sub_parameter, fi.parameter, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name as area, count(*) count_value, sum(value) value
 from {db_schema}.scenariodata sd
 join {db_schema}.area a on a.area_id=sd.area_id
 join (
@@ -51,29 +51,39 @@ join (
     from {db_schema}.file f
 ) fi on fi.file_id=sd.file_id
 join {db_schema}.period pe on sd.date between pe.start_date and pe.end_date
-group by fi.sub_parameter, fi.parameter, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name;
+group by fi.sub_parameter, fi.parameter, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, sd.date, a.area_id, a.name;
 
 drop view if exists {db_schema}.scenariodata_series_date cascade;
 create or replace view {db_schema}.scenariodata_series_date as
-select sub_parameter, parameter, scenario, solution, area_id, area, array_agg(sum_value order by date) as data, array_agg(distinct date order by date) as date_agg
+select sub_parameter, parameter, scenario, solution, area_id, area, array_agg(value order by date) as data, array_agg(distinct date order by date) as date_agg
 from  {db_schema}.scenariodata_per_date
 group by sub_parameter, parameter, scenario, solution, area_id, area;
 
 drop view if exists {db_schema}.scenariodata_agg cascade;
 create or replace view {db_schema}.scenariodata_agg as
-select sub_parameter, parameter, scenario, solution, period_id, period_name, area_id, area, count(*) count_value, sum(sum_value) sum_value
+select sub_parameter, parameter, users, scenario, solution, period_id, period_name, area_id, area, count(*) count_value, sum(value) value
 from {db_schema}.scenariodata_per_date
-group by sub_parameter, parameter, scenario, solution, period_id, period_name, area_id, area;
+group by sub_parameter, parameter, users, scenario, solution, period_id, period_name, area_id, area;
 
 drop view if exists {db_schema}.scenariodata_series_agg cascade;
 create or replace view {db_schema}.scenariodata_series_agg as
-select sub_parameter, parameter, scenario, solution, area_id, area, array_agg(sum_value order by period_id) as data
+select sub_parameter, parameter, scenario, solution, area_id, area, array_agg(value order by period_id) as data
 from {db_schema}.scenariodata_agg
 group by sub_parameter, parameter, scenario, solution, area_id, area;
 
 drop view if exists {db_schema}.scenariodata_series_data_total cascade;
 create or replace view {db_schema}.scenariodata_series_data_total as
 select * from {db_schema}.scenariodata_series_date where parameter in ('waterAvailability', 'waterDemand', 'waterGap');
+
+drop view if exists {db_schema}.scenariodata_per_period cascade;
+create or replace view {db_schema}.scenariodata_per_period as
+select fi.parameter, fi.filename, fi.users, fi.scenario, fi.solution, pe.period_id, pe.period_name, ar.area_id, ar.name as area, ar.km2 as area_km2, sc.value as risk_value, ar.geometry
+, 'The risk for {name} is {value}.' as "popupHTML"
+from {db_schema}.scenariodata sc
+join {db_schema}.file fi on fi.file_id=sc.file_id
+join {db_schema}.period pe on pe.period_id=sc.period_id
+join {db_schema}.area ar on ar.area_id=sc.area_id
+;
 
 drop view if exists {db_schema}.scenariodata_risk_per_period cascade;
 create or replace view {db_schema}.scenariodata_risk_per_period as
@@ -195,6 +205,33 @@ $$
         and sc_scenario=scenario
         and sc_solution=coalesce(solution, 'none')
         and sc_users=users
+    )
+    select jsonb_build_object(
+        'type','FeatureCollection'
+        ,'features', json_agg(st_asgeojson(x.*)::json)
+        )
+    from x;
+$$ language sql
+;
+-- example:
+-- select * from {db_schema}.risk_data_geojson(1,'SSP2', 'none', 'Agriculture');
+
+
+drop function if exists {db_schema}.all_data_geojson(parameter varchar, period_id int, scenario varchar, solution varchar, users varchar);
+create or replace function {db_schema}.all_data_geojson(parameter varchar, period_id int, scenario varchar, solution varchar='none', users varchar='none') returns setof jsonb as
+$$
+    with x as (
+        select *
+        from (
+            select area_id, area, area_km2, value, "popupHTML", geometry
+            ,sc.period_id sc_period_id, sc.scenario sc_scenario, sc.solution sc_solution, sc.users sc_users
+            from {db_schema}.scenariodata_per_period sc
+        ) sub
+        where sc_period_id=1
+        and sc_scenario=scenario
+        and sc_solution=coalesce(solution, 'none')
+        and sc_users=users
+        and sc_parameter=parameter
     )
     select jsonb_build_object(
         'type','FeatureCollection'
