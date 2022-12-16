@@ -223,7 +223,7 @@ $$
             ,sc.period_id sc_period_id, sc.scenario sc_scenario, sc.solution sc_solution, sc.users sc_users
             from {db_schema}.scenariodata_risk_per_period sc
         ) sub
-        where sc_period_id=1
+        where sc_period_id=period_id
         and sc_scenario=scenario
         and sc_solution=coalesce(solution, 'none')
         and sc_users=users
