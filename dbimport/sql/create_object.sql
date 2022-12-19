@@ -38,16 +38,16 @@ create table {db_schema}.scenariodata
 );
 
 drop view if exists {db_schema}.list_parameter cascade;
-create or replace view {db_schema}.list_parameter as select distinct parameter from {db_schema}.file;
+create or replace view {db_schema}.list_parameter as select distinct parameter from {db_schema}.file order by 1;
 
 drop view if exists {db_schema}.list_users cascade;
-create or replace view {db_schema}.list_users as select distinct users from  {db_schema}.file;
+create or replace view {db_schema}.list_users as select distinct users from {db_schema}.file where parameter not ilike 'wateravailability' order by 1;
 
 drop view if exists {db_schema}.list_scenario cascade;
-create or replace view {db_schema}.list_scenario as select distinct scenario from  {db_schema}.file;
+create or replace view {db_schema}.list_scenario as select distinct scenario from  {db_schema}.file order by 1;
 
 drop view if exists {db_schema}.list_solution cascade;
-create or replace view {db_schema}.list_solution as select distinct solution from  {db_schema}.file;
+create or replace view {db_schema}.list_solution as select distinct solution from  {db_schema}.file order by 1;
 
 drop view if exists {db_schema}.scenariodata_per_date cascade;
 create or replace view {db_schema}.scenariodata_per_date as
