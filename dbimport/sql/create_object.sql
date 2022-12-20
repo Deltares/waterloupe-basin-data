@@ -121,8 +121,8 @@ join {db_schema}.period pe on pe.period_id=sc.period_id
 join {db_schema}.area ar on ar.area_id=sc.area_id
 where fi.parameter in ('risk', 'waterScarcityIndex');
 
-drop function if exists {db_schema}.scenariodata_agg_json(selected_area_id int, selected_scenario varchar, selected_solution varchar, selected_users varchar);
-create or replace function {db_schema}.scenariodata_agg_json(selected_area_id int, selected_scenario varchar, selected_solution varchar, selected_users varchar) returns setof json as
+drop function if exists {db_schema}.scenariodata_agg_json(selected_area_id int, selected_scenario varchar, selected_solution varchar);
+create or replace function {db_schema}.scenariodata_agg_json(selected_area_id int, selected_scenario varchar, selected_solution varchar) returns setof json as
 $$
     select
    json_build_object(
@@ -137,6 +137,7 @@ $$
                 json_build_object(
                 'name', sda.parameter
                 ,'stack', sda.sub_parameter
+                ,'users', sda.users
                 ,'data', to_json(sda.data)
                 ,'type', 'bar'
                 )
@@ -144,13 +145,12 @@ $$
         from {db_schema}.scenariodata_series_agg sda
         where sda.area_id=selected_area_id and sda.scenario=selected_scenario and sda.solution=selected_solution
         and sda.sub_parameter <> 'gap'
-        and sda.users=selected_users
     ) j
     , (select array_agg(period_name order by period_id) period_name_agg from {db_schema}.period) pe
 $$ language sql
 ;
 -- example:
--- select * from {db_schema}.scenariodata_agg_json('1', 'SSP2','none','Agriculture');
+-- select * from {db_schema}.scenariodata_agg_json('1', 'SSP2','none');
 
 drop function if exists {db_schema}.scenariodata_per_date_json(selected_area_id int, selected_scenario varchar, selected_solution varchar);
 create or replace function {db_schema}.scenariodata_per_date_json(selected_area_id int, selected_scenario varchar, selected_solution varchar) returns setof json as
