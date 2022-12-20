@@ -67,8 +67,12 @@ group by fi.sub_parameter, fi.parameter, fi.users, fi.scenario, fi.solution, pe.
 
 drop view if exists {db_schema}.scenariodata_series_date cascade;
 create or replace view {db_schema}.scenariodata_series_date as
-select sub_parameter, parameter, scenario, solution, area_id, area, array_agg(value order by date) as data, array_agg(distinct date order by date) as date_agg
-from  {db_schema}.scenariodata_per_date
+select sub_parameter, parameter, scenario, solution, area_id, area, array_agg(sum_value order by date) as data, array_agg(distinct date order by date) as date_agg
+from (
+    select sub_parameter, parameter, scenario, solution, area_id, area, sum(value) as sum_value, date
+    from {db_schema}.scenariodata_per_date
+    group by sub_parameter, parameter, scenario, solution, area_id, area, date
+)x
 group by sub_parameter, parameter, scenario, solution, area_id, area;
 
 drop view if exists {db_schema}.scenariodata_agg cascade;
@@ -210,7 +214,6 @@ with x as (
     , (select date_agg from x limit 1) da
 $$ language sql;
 -- example:
--- select * from {db_schema}.scenariodata_per_date_json('altoChillon', 'SSP3','none');
 -- select * from {db_schema}.scenariodata_per_date_json(1, 'SSP3','none');
 
 drop function if exists {db_schema}.risk_data_geojson(period_id int, scenario varchar, solution varchar, users varchar);
