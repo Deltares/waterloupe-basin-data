@@ -103,10 +103,10 @@ def processWL(basePathSource, connString, processData):
 
         # (re-)create db views and functions per case
         print('(re-)create database views and functions')
-        sqlfile = open(r'sql/create_view.sql', 'r')
-        sql_create_object = sqlfile.read()
-        sqlfile.close()
-        sql_create_object = sql_create_object.replace(r"{db_schema}", db_schema)
-        # print(sql_create_object)
-        conn.execute(sql_create_object)
+        sqlfile_view = open(r'sql/create_view.sql', 'r')
+        sql_create_view = sqlfile_view.read()
+        sqlfile_view.close()
+        sql_create_view = sql_create_view.replace(r"{db_schema}", db_schema)
+        # print(sql_create_view)
+        conn.execute(sql_create_view)
 
