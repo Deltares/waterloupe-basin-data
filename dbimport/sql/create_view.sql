@@ -178,7 +178,7 @@ with x as (
     , (select date_agg from x limit 1) da
 $$ language sql;
 -- example:
--- select * from {db_schema}.scenariodata_per_date_json(1, 'SSP3','none');
+-- select * from {db_schema}.scenariodata_per_date_total_json(1, 'SSP3','none');
 
 drop function if exists {db_schema}.risk_data_geojson(period_id int, scenario varchar, solution varchar, users varchar);
 create or replace function {db_schema}.risk_data_geojson(period_id int, scenario varchar, solution varchar='none', users varchar='none') returns setof jsonb as

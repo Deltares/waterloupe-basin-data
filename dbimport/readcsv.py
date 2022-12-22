@@ -17,6 +17,7 @@ import geopandas as gpd
 def processWL(basePathSource, connString, processData):
     # db connection
     engine = create_engine(connString)
+    engine = engine.execution_options(isolation_level="AUTOCOMMIT")
     conn = engine.connect()
 
     # read main folders (each folder is one case)
