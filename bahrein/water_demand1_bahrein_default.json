@@ -36,7 +36,7 @@
 		"maintainAspectRatio": false,
 		"legend": {
 			"display": true,
-			"position": "bottom"
+			"position": "top"
 		},
 		"scales": {
 			"xAxes": [{
